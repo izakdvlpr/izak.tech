@@ -50,7 +50,7 @@ export function Hero() {
     <section className="my-28 flex items-center justify-between">
       <div className="flex flex-col gap-4">
         <p className="text-4xl font-bold">Hey, i'm Izak.</p>
-        
+
         <p className="w-[400px] text-xl">
           Full Stack Developer. Passionate about programming, technology and
           pizza.
@@ -65,11 +65,7 @@ export function Hero() {
               key={social.name}
               asChild
             >
-              <Link
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <Link href={social.url} target="_blank" rel="noopener noreferrer">
                 <social.icon className="text-white" />
               </Link>
             </Button>

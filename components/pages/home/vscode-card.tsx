@@ -29,8 +29,8 @@ export function VscodeCard({ vscode }: VscodeCardProps) {
         <div className="w-16 h-16 relative">
           <Image
             src={largeImage}
-            alt={vscode.assets.large_text}
-            title={vscode.assets.large_text ?? 'Visual Studio Code'}
+            alt={vscode.assets.large_text ?? 'Visual Studio Code'}
+            title={vscode.assets.large_text}
             width={64}
             height={64}
             className="w-16 h-16 rounded-md"
@@ -38,8 +38,8 @@ export function VscodeCard({ vscode }: VscodeCardProps) {
 
           <Image
             src={smallImage}
-            alt={vscode.assets.small_image}
-            title={vscode.assets.small_text ?? 'Visual Studio Code'}
+            alt={vscode.assets.small_text ?? 'Visual Studio Code'}
+            title={vscode.assets.small_text}
             width={64}
             height={64}
             className="absolute bottom-[-5px] right-[-5px] w-6 h-6 rounded-full"

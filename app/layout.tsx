@@ -5,11 +5,12 @@ import { GeistSans } from 'geist/font/sans'
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 
+import { Footer } from '@/components/common/footer'
 import { Header } from '@/components/common/header'
 import { ThemeProvider } from '@/providers/theme-provider'
 
 export const metadata: Metadata = {
-  title: 'Uebisaiti',
+  title: 'izak.tech',
 }
 
 export default function RootLayout({
@@ -23,7 +24,7 @@ export default function RootLayout({
           defaultTheme="dark"
           disableTransitionOnChange
         >
-          <div className="w-full max-w-[900px] h-screen mx-auto p-6 flex flex-col relative">
+          <div className="w-full max-w-[1200px] h-screen mx-auto p-6 flex flex-col relative">
             <div
               className="absolute top-0 flex items-center justify-center w-1/3 pointer-events-none -translate-y-1/2 left-1/2 -translate-x-1/2 -z-10 aspect-square"
               aria-hidden="true"
@@ -35,6 +36,8 @@ export default function RootLayout({
             <Header />
 
             {children}
+
+            <Footer />
           </div>
         </ThemeProvider>
       </body>

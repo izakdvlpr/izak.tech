@@ -1,0 +1,59 @@
+---
+title: How to use Next.js with Docker
+description: This is an example blog page with MDX support.
+thumbnail: /images/blog/how-to-use-nextjs-with-docker.png
+date: '2024-12-4 17:02'
+tags: ['nextjs', 'reactjs', 'docker']
+---
+
+In this blog post, we will learn how to use Next.js with Docker.
+
+## Step 1: Create a Next.js app
+
+First, create a new Next.js app using the following command:
+
+```bash
+npx create-next-app@latest my-next-app
+```
+
+## Step 2: Create a Dockerfile
+
+Next, create a `Dockerfile` in the root of your project with the following content:
+
+```Dockerfile
+FROM node:lts
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]
+```
+
+## Step 3: Build the Docker image
+
+Now, build the Docker image using the following command:
+
+```bash
+docker build -t my-next-app .
+```
+
+## Step 4: Run the Docker container
+
+Finally, run the Docker container using the following command:
+
+```bash
+docker run -p 3000:3000 my-next-app
+```
+
+## Step 5: Docker compose configuration (optional)
+
+If you want to use 
+
+That's it! You have successfully used Next.js with Docker.

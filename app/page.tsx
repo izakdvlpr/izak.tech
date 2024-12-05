@@ -1,9 +1,9 @@
+import { Hero } from '@/components/pages/home/hero'
 import { SpotifyCard } from '@/components/pages/home/spotify-card'
 import { VscodeCard } from '@/components/pages/home/vscode-card'
 import { getUserById } from '@/lib/lanyard'
-import { Hero } from '@/components/pages/home/hero'
 
-export default async function Home() {
+export default async function HomePage() {
   const user = await getUserById('461273822360895491')
   const vscode = user?.activities?.find((a) => a.name === 'Visual Studio Code')
 
