@@ -54,6 +54,22 @@ docker run -p 3000:3000 my-next-app
 
 ## Step 5: Docker compose configuration (optional)
 
-If you want to use 
+If you want to use docker compose, you can create a `docker-compose.yml` file with the following content:
+
+```yaml
+services:
+  my-next-app:
+    container_name: my-next-app
+    restart: always
+    build: .
+    ports:
+      - "3000:3000"
+```
+
+Then, you can run the Docker container using the following command:
+
+```bash
+docker compose up
+```
 
 That's it! You have successfully used Next.js with Docker.

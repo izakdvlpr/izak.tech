@@ -2,15 +2,18 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { Badge } from '@/components/ui/badge'
-import { getAllPosts } from '@/lib/blog'
+import { getAllPosts, getTags } from '@/lib/blog'
 
 export default async function PostListPage() {
   const posts = await getAllPosts()
+  const tags = getTags(posts)
+
+  console.log(tags)
 
   return (
     <main className="mt-10 flex flex-col gap-2">
       {posts.map((post) => (
-        <Link key={post.slug} href={`/posts/${post.slug}`}>
+        <Link key={post.slug} href={`/blog/${post.slug}`}>
           <article className="flex">
             <Image
               src={post.thumbnail}

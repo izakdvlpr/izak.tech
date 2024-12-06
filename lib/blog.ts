@@ -1,17 +1,8 @@
 import fs from 'node:fs'
 import dayjs from 'dayjs'
 import fg from 'fast-glob'
-import type { MDXRemoteSerializeResult } from 'next-mdx-remote'
-import { serialize } from 'next-mdx-remote/serialize'
+import matter from 'gray-matter'
 import readingTime from 'reading-time'
-
-interface SourceFormatter {
-  title: string
-  description: string
-  date: string
-  tags: string[]
-  thumbnail: string
-}
 
 interface Post {
   slug: string
@@ -22,36 +13,54 @@ interface Post {
   thumbnail: string
   readingTime: string
   words: number
-  source: MDXRemoteSerializeResult
+  content: string
+}
+
+function isSlug(slug: string): boolean {
+  return /^[a-z0-9-]+$/.test(slug)
+}
+
+function getSlug(filePath: string) {
+  return filePath.split('/').slice(-1)[0].replace('.mdx', '')
 }
 
 export async function getAllPosts(): Promise<Post[]> {
   const files = fg.sync('posts/**/*.mdx')
 
   const posts = await Promise.all(
-    files
-      .map(async (filePath) => {
-        const slug = filePath.split('/').slice(-1)[0].replace('.mdx', '')
-        const post = await getPostBySlug(slug)
+    files.map(async (filePath) => {
+      const slug = getSlug(filePath)
+      const post = await getPostBySlug(slug)
 
-        return post as Post
-      })
-      .filter(Boolean),
+      return post as Post
+    }),
   )
 
   return posts
+    .filter(Boolean)
+    .sort((a, b) => dayjs(b.date).unix() - dayjs(a.date).unix())
+}
+
+export function getTags(posts: Post[]): string[] {
+  const tags = posts.flatMap((post) => post.tags)
+
+  return [...new Set(tags)]
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
+  if (!isSlug(slug)) {
+    return null
+  }
+
   try {
-    const content = await fs.promises.readFile(`posts/${slug}.mdx`, 'utf-8')
+    const source = await fs.promises.readFile(`posts/${slug}.mdx`, 'utf-8')
 
-    const times = readingTime(content)
+    const times = readingTime(source)
 
-    const source = await serialize(content, { parseFrontmatter: true })
-
-    const { title, description, date, tags, thumbnail } =
-      source.frontmatter as unknown as SourceFormatter
+    const {
+      data: { title, description, date, tags, thumbnail },
+      content,
+    } = matter(source)
 
     return {
       slug,
@@ -62,7 +71,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       thumbnail,
       readingTime: times.text,
       words: times.words,
-      source,
+      content,
     }
   } catch {
     return null
