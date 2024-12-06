@@ -1,5 +1,5 @@
 import type { Activity } from '@/lib/lanyard'
-import { formatTime } from '@/lib/utils'
+import { formatTime } from '@/utils'
 import { Code } from 'lucide-react'
 import Image from 'next/image'
 

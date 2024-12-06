@@ -1,14 +1,18 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { unstable_cache as cache } from 'next/cache'
 
 import { Badge } from '@/components/ui/badge'
-import { getAllPosts, getTags } from '@/lib/blog'
+import { getAllPosts } from '@/lib/blog'
+
+const getCachedPosts = cache(
+  () => getAllPosts(),
+  ['posts'],
+  { revalidate: 60 }
+)
 
 export default async function PostListPage() {
-  const posts = await getAllPosts()
-  const tags = getTags(posts)
-
-  console.log(tags)
+  const posts = await getCachedPosts()
 
   return (
     <main className="mt-10 flex flex-col gap-2">
@@ -35,7 +39,7 @@ export default async function PostListPage() {
               <h2 className="text-3xl font-bold">{post.title}</h2>
 
               <p className="text-sm text-gray-200">
-                {post.date} • {post.words} words • {post.readingTime}
+                {post.date} • {post.words} words • {post.readingTime} • {post.views} views
               </p>
             </div>
           </article>

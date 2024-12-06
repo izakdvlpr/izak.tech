@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import type { Spotify } from '@/lib/lanyard'
-import { formatTime } from '@/lib/utils'
+import { formatTime } from '@/utils'
 
 interface SpotifyCardProps {
   spotify: Spotify

@@ -1,7 +1,7 @@
 export default function AboutPage() {
   return (
     <main className="mt-10 flex flex-col gap-6">
-      <h1 className="text-3xl font-bold">Contact</h1>
+      <h1 className="text-3xl font-bold">About</h1>
 
       <p className="text-lg text-gray-200">
         My name is Isaque Lima,{' '}

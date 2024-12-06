@@ -1,10 +1,9 @@
 'use server'
 
-import { headers as allHeaders } from 'next/headers'
-
 import { EmailTemplate } from '@/components/pages/contact/email-template'
 import { resend } from '@/lib/resend'
 import { redis } from '@/lib/upstash'
+import { getIp } from '@/utils/get-ip'
 
 interface SendEmailActionData {
   name: string
@@ -13,20 +12,20 @@ interface SendEmailActionData {
   message: string
 }
 
-const MAX_SEND_EMAILS = 1
+const MAX_SEND_EMAILS = 3
 const WINDOWS_MS = 60 * 60 * 1000 // 1 hour
-const RATELIMIT_KEY = 'email:ratelimit'
 
 export async function sendEmailAction(data: SendEmailActionData) {
   const { name, email, subject, message } = data
 
-  const headers = await allHeaders()
-  const ip = headers.get('x-real-ip') ?? '127.0.0.1'
+  const ip = await getIp()
   
-  const currentRateLimit = await redis.incr(`${RATELIMIT_KEY}:${ip}`)
+  const rateLimitKey = `email:ratelimit:${ip}`
+  
+  const currentRateLimit = await redis.incr(rateLimitKey)
 
   if (currentRateLimit === 1) {
-    await redis.expire(`${RATELIMIT_KEY}:${ip}`, Math.floor(WINDOWS_MS / 1000))
+    await redis.expire(rateLimitKey, Math.floor(WINDOWS_MS / 1000))
   }
 
   if (currentRateLimit > MAX_SEND_EMAILS) {
@@ -41,8 +40,6 @@ export async function sendEmailAction(data: SendEmailActionData) {
   })
 
   if (error) {
-    console.log(error)
-
     return false
   }
 

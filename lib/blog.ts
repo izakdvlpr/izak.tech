@@ -4,6 +4,8 @@ import fg from 'fast-glob'
 import matter from 'gray-matter'
 import readingTime from 'reading-time'
 
+import { redis } from './upstash'
+
 interface Post {
   slug: string
   title: string
@@ -14,6 +16,7 @@ interface Post {
   readingTime: string
   words: number
   content: string
+  views: number
 }
 
 function isSlug(slug: string): boolean {
@@ -61,6 +64,8 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       data: { title, description, date, tags, thumbnail },
       content,
     } = matter(source)
+    
+    const views = await redis.get<number>(`post:views:${slug}`) ?? 0
 
     return {
       slug,
@@ -72,8 +77,26 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       readingTime: times.text,
       words: times.words,
       content,
+      views,
     }
   } catch {
     return null
   }
+}
+
+const VIEW_EXPIRATION = 60 * 60 * 24 // 1 day
+
+export async function addViewToPost({ slug, ip }: { slug: string; ip: string }) {
+  const hasViewed = await redis.get(`post:views:${slug}:${ip}`)
+  
+  if (hasViewed) {
+    return
+  }
+  
+  await redis.set(`post:views:${slug}:${ip}`, true, {
+    nx: true,
+    ex: VIEW_EXPIRATION,
+  })
+  
+  await redis.incr(`post:views:${slug}`)
 }
