@@ -36,7 +36,7 @@ export default function ContactPage() {
 
   return (
     <main className="mt-10 flex flex-col gap-4">
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-bold">Contact</h1>
 
         <p className="text-lg text-gray-200">
@@ -44,8 +44,8 @@ export default function ContactPage() {
         </p>
       </div>
 
-      <form className="flex flex-col gap-4" action={submitAction}>
-        <div className="grid grid-cols-2 gap-4">
+      <form className="flex flex-col gap-6" action={submitAction}>
+        <div className="grid grid-cols-2 gap-6">
           <Input name="name" placeholder="Your name" required />
 
           <Input

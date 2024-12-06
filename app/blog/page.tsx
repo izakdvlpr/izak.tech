@@ -15,7 +15,9 @@ export default async function PostListPage() {
   const posts = await getCachedPosts()
 
   return (
-    <main className="mt-10 flex flex-col gap-2">
+    <main className="mt-10 flex flex-col gap-6">
+      <h1 className="text-3xl font-bold">Blog</h1>
+      
       {posts.map((post) => (
         <Link key={post.slug} href={`/blog/${post.slug}`}>
           <article className="flex">
@@ -39,7 +41,7 @@ export default async function PostListPage() {
               <h2 className="text-3xl font-bold">{post.title}</h2>
 
               <p className="text-sm text-gray-200">
-                {post.date} • {post.words} words • {post.readingTime} • {post.views} views
+                {post.date} • {post.words} words • {post.readingTime}
               </p>
             </div>
           </article>
