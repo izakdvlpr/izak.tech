@@ -4,7 +4,8 @@ import fg from 'fast-glob'
 import matter from 'gray-matter'
 import readingTime from 'reading-time'
 
-import { redis } from './upstash'
+import { VIEW_EXPIRATION } from '@/utils'
+import { redis } from './redis'
 
 interface Post {
   slug: string
@@ -27,13 +28,17 @@ function getSlug(filePath: string) {
   return filePath.split('/').slice(-1)[0].replace('.mdx', '')
 }
 
+function getFiles() {
+  return fg.sync('posts/**/*.mdx')
+}
+
 export async function getAllPosts(): Promise<Post[]> {
-  const files = fg.sync('posts/**/*.mdx')
+  const files = getFiles()
 
   const posts = await Promise.all(
     files.map(async (filePath) => {
       const slug = getSlug(filePath)
-      const post = await getPostBySlug(slug)
+      const post = await getPostBySlug(slug, false)
 
       return post as Post
     }),
@@ -44,13 +49,22 @@ export async function getAllPosts(): Promise<Post[]> {
     .sort((a, b) => dayjs(b.date).unix() - dayjs(a.date).unix())
 }
 
+export function getSlugs(): string[] {
+  const files = getFiles()
+
+  return files.map(getSlug)
+}
+
 export function getTags(posts: Post[]): string[] {
   const tags = posts.flatMap((post) => post.tags)
 
   return [...new Set(tags)]
 }
 
-export async function getPostBySlug(slug: string): Promise<Post | null> {
+export async function getPostBySlug(
+  slug: string,
+  fetchViews = true,
+): Promise<Post | null> {
   if (!isSlug(slug)) {
     return null
   }
@@ -64,8 +78,13 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       data: { title, description, date, tags, thumbnail },
       content,
     } = matter(source)
-    
-    const views = await redis.get<number>(`post:views:${slug}`) ?? 0
+
+    const views = fetchViews
+      ? await redis
+          .get(`posts:${slug}`)
+          .then(Number)
+          .catch(() => 0)
+      : 0
 
     return {
       slug,
@@ -84,19 +103,18 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
   }
 }
 
-const VIEW_EXPIRATION = 60 * 60 * 24 // 1 day
+export async function addViewToPost({
+  slug,
+  ip,
+}: { slug: string; ip: string }) {
+  const isViewed = await redis.get(`posts:${slug}:ips:${ip}`)
 
-export async function addViewToPost({ slug, ip }: { slug: string; ip: string }) {
-  const hasViewed = await redis.get(`post:views:${slug}:${ip}`)
-  
-  if (hasViewed) {
-    return
+  if (isViewed) {
+    return false
   }
-  
-  await redis.set(`post:views:${slug}:${ip}`, true, {
-    nx: true,
-    ex: VIEW_EXPIRATION,
-  })
-  
-  await redis.incr(`post:views:${slug}`)
+
+  await redis.set(`posts:${slug}:ips:${ip}`, 'true', 'EX', VIEW_EXPIRATION)
+  await redis.incr(`posts:${slug}`)
+
+  return true
 }

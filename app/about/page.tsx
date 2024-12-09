@@ -1,3 +1,9 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Isaque Lima | About',
+}
+
 export default function AboutPage() {
   return (
     <main className="mt-10 flex flex-col gap-6">

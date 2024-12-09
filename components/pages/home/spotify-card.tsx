@@ -32,7 +32,7 @@ export function SpotifyCard({ spotify }: SpotifyCardProps) {
           className="w-16 h-16 rounded-md"
         />
 
-        <div className="flex flex-col truncate">
+        <div className="max-w-[300px] flex flex-col truncate">
           <Link
             href={`https://open.spotify.com/track/${spotify.track_id}`}
             title={spotify.song}

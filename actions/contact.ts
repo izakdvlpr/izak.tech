@@ -1,8 +1,8 @@
 'use server'
 
-import { EmailTemplate } from '@/components/pages/contact/email-template'
-import { resend } from '@/lib/resend'
-import { redis } from '@/lib/upstash'
+import { sendEmail } from '@/lib/email'
+import { redis } from '@/lib/redis'
+import { MAX_SEND_EMAILS, RATE_LIMIT_WINDOW_EXPIRATION } from '@/utils'
 import { getIp } from '@/utils/get-ip'
 
 interface SendEmailActionData {
@@ -12,34 +12,28 @@ interface SendEmailActionData {
   message: string
 }
 
-const MAX_SEND_EMAILS = 3
-const WINDOWS_MS = 60 * 60 * 1000 // 1 hour
-
 export async function sendEmailAction(data: SendEmailActionData) {
   const { name, email, subject, message } = data
 
   const ip = await getIp()
-  
-  const rateLimitKey = `email:ratelimit:${ip}`
-  
-  const currentRateLimit = await redis.incr(rateLimitKey)
 
-  if (currentRateLimit === 1) {
-    await redis.expire(rateLimitKey, Math.floor(WINDOWS_MS / 1000))
+  const key = `emails:ips:${ip}`
+  const currentLimit = await redis.incr(key)
+
+  if (currentLimit === 1) {
+    await redis.expire(key, Math.floor(RATE_LIMIT_WINDOW_EXPIRATION / 1000))
   }
 
-  if (currentRateLimit > MAX_SEND_EMAILS) {
+  if (currentLimit > MAX_SEND_EMAILS) {
     return false
   }
 
-  const { error } = await resend.emails.send({
-    from: 'contact@izak.tech',
-    to: 'izakdvlpr@gmail.com',
+  const isSended = await sendEmail({
     subject,
-    react: EmailTemplate({ name, email, subject, message }),
+    context: { name, subject, email, message },
   })
 
-  if (error) {
+  if (!isSended) {
     return false
   }
 

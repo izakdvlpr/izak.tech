@@ -78,6 +78,7 @@ export function Hero() {
         alt="avatar"
         width={200}
         height={200}
+        priority
         className="w-52 h-52 rounded-full"
       />
     </section>

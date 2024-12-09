@@ -1,17 +1,105 @@
 import '@/styles/global.css'
 
-import { GeistMono } from 'geist/font/mono'
-import { GeistSans } from 'geist/font/sans'
 import type { Metadata } from 'next'
+import localFont from 'next/font/local'
 import type { ReactNode } from 'react'
 
 import { Footer } from '@/components/common/footer'
 import { Header } from '@/components/common/header'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/providers/theme-provider'
+import { PUBLIC_URL, cn } from '@/utils'
+
+const geistSans = localFont({
+  variable: '--font-geist-sans',
+  src: [
+    {
+      path: '../public/fonts/geist-sans-light.ttf',
+      weight: '300',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/geist-sans-regular.ttf',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/geist-sans-medium.ttf',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/geist-sans-semi-bold.ttf',
+      weight: '600',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/geist-sans-bold.ttf',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+})
+
+const geistMono = localFont({
+  variable: '--font-geist-mono',
+  src: [
+    {
+      path: '../public/fonts/geist-mono-light.ttf',
+      weight: '300',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/geist-mono-regular.ttf',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/geist-mono-medium.ttf',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/geist-mono-semi-bold.ttf',
+      weight: '600',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/geist-mono-bold.ttf',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+})
+
+const title = 'Isaque Lima | Home'
+const description = 'Full Stack Developer'
 
 export const metadata: Metadata = {
-  title: 'izak.tech',
+  title,
+  description,
+  alternates: {
+    canonical: PUBLIC_URL,
+  },
+  openGraph: {
+    title,
+    type: 'website',
+    locale: 'pt_BR',
+    url: PUBLIC_URL,
+    description,
+    images: [
+      {
+        url: `${PUBLIC_URL}/og?title=${encodeURIComponent('Isaque Lima')}`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+  twitter: {
+    creator: '@izakdvlpr',
+    site: '@izakdvlpr',
+    card: 'summary_large_image',
+  },
 }
 
 export default function RootLayout({
@@ -19,7 +107,7 @@ export default function RootLayout({
 }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${GeistSans.variable} ${GeistMono.variable}`}>
+      <body className={cn(geistSans.variable, geistMono.variable)}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

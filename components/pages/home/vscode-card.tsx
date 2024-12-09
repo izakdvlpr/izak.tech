@@ -33,7 +33,7 @@ export function VscodeCard({ vscode }: VscodeCardProps) {
             title={vscode.assets.large_text}
             width={64}
             height={64}
-            className="w-16 h-16 rounded-md"
+            className="w-16 h-16 rounded-md flex-shrink"
           />
 
           <Image
@@ -46,10 +46,14 @@ export function VscodeCard({ vscode }: VscodeCardProps) {
           />
         </div>
 
-        <div className="flex flex-col">
+        <div className="max-w-[300px] flex flex-col truncate">
           <h1 className="text-lg font-bold">Visual Studio Code</h1>
-          <p className="text-sm">{vscode.details}</p>
-          <p className="text-sm">{vscode.state}</p>
+          <p className="text-sm text-ellipsis overflow-hidden">
+            {vscode.details}
+          </p>
+          <p className="text-sm text-ellipsis overflow-hidden">
+            {vscode.state}
+          </p>
           <p className="text-sm">{timeForamted}</p>
         </div>
       </div>
