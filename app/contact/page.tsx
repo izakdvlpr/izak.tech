@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { Form } from '@/components/pages/contact/form'
 
 export const metadata: Metadata = {
-  title: 'Isaque Lima | Contact',
+  title: 'Isaque Lima » Contact',
 }
 
 export default function ContactPage() {

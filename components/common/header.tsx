@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const links = [
-  { title: 'Home', href: '/' },
   { title: 'About', href: '/about' },
   { title: 'Blog', href: '/blog' },
   { title: 'Projects', href: '/projects' },
@@ -31,7 +30,7 @@ export function Header() {
             href={link.href}
             className={cn(
               'text-gray-300',
-              pathname === link.href && 'font-bold text-primary',
+              pathname.startsWith(link.href) && 'font-bold text-primary',
             )}
           >
             {link.title}

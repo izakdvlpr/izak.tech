@@ -72,7 +72,7 @@ const geistMono = localFont({
   ],
 })
 
-const title = 'Isaque Lima | Home'
+const title = 'Isaque Lima'
 const description = 'Full Stack Developer'
 
 export const metadata: Metadata = {
@@ -89,7 +89,7 @@ export const metadata: Metadata = {
     description,
     images: [
       {
-        url: `${PUBLIC_URL}/og?title=${encodeURIComponent('Isaque Lima')}`,
+        url: `${PUBLIC_URL}/api/og?title=${encodeURIComponent('Isaque Lima')}`,
         width: 1200,
         height: 630,
       },

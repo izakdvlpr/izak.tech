@@ -1,34 +1,35 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Isaque Lima | About',
+  title: 'Isaque Lima » About',
 }
 
 export default function AboutPage() {
   return (
-    <main className="mt-10 flex flex-col gap-4">
+    <main className="mt-10 flex flex-col gap-4 mixin/text:multi-[text-lg;text-gray-200]">
       <h1 className="text-3xl font-bold">About</h1>
 
-      <p className="text-lg text-gray-200">
-        My name is Isaque Lima,{' '}
+      <p className="mixin/text">
+        My name is Isaque Lima, I am{' '}
         {new Date().getFullYear() - new Date('2003-04-01').getFullYear()} years
-        old. I am a System Analyst and a student. I am passionate about
-        technology and programming. I am currently studying Systems Analysis and
-        Development at the University of Vila Velha.
+        old and I am a Systems Analyst and student. I am passionate about
+        technology and programming, and I am currently studying Systems Analysis
+        and Development at the University of Vila Velha.
       </p>
 
-      <p className="text-lg text-gray-200">
-        I've started my career as a developer in 2018, and since then I've been
-        working with creating bots for discord. I have experience with
-        technologies like JavaScript, TypeScript, React, Next, Node.js, and
-        others. I am also a self-taught developer and I have been programming
-        since I was 15 years old. I am always looking for new opportunities to
-        learn and grow as a developer.
+      <p className="mixin/text">
+        I started my career as a developer in 2018 and have accumulated
+        experience with several technologies, including TypeScript, React and
+        Node.js. Throughout my career, I have participated in projects involving
+        the development of modern web applications, integrations with APIs and
+        scalable solutions.
       </p>
 
-      <p className="text-lg text-gray-200">
-        I am currently working in Akler as a Fullstack Developer, where I work
-        with technologies like React, Next, Node.js, and others.
+      <p className="mixin/text">
+        I am interested in learning new technologies, especially those focused
+        on software architecture, performance and fullstack development. In
+        addition, I constantly seek to improve my skills to create practical and
+        innovative solutions that positively impact people and companies.
       </p>
     </main>
   )

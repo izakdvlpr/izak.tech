@@ -1,17 +1,19 @@
 import type { Metadata } from 'next'
-import { unstable_cache as cache, revalidateTag } from 'next/cache'
+import type { Revalidate } from 'next/dist/server/lib/revalidate'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+import { ReportView } from '@/components/pages/blog/details/report-view'
 import { Badge } from '@/components/ui/badge'
 import { MDXRender } from '@/components/ui/mdx/mdx-render'
-import { addViewToPost, getPostBySlug, getSlugs } from '@/lib/blog'
+import { getPostBySlug, getSlugs } from '@/lib/blog'
 import { PUBLIC_URL } from '@/utils'
-import { getIp } from '@/utils/get-ip'
 
 interface PostDetailsPageProps {
   params: Promise<{ slug: string }>
 }
+
+export const revalidate: Revalidate = 60
 
 export function generateStaticParams(): { slug: string }[] {
   const slugs = getSlugs()
@@ -30,7 +32,7 @@ export async function generateMetadata({
     return {}
   }
 
-  const title = `${post.title} | Blog`
+  const title = `${post.title} » Isaque Lima`
   const url = `${PUBLIC_URL}/blog/${slug}`
 
   return {
@@ -49,7 +51,7 @@ export async function generateMetadata({
       publishedTime: new Date(post.date ?? 0).toISOString(),
       images: [
         {
-          url: `${PUBLIC_URL}/og?title=${encodeURIComponent(title)}`,
+          url: `${PUBLIC_URL}/api/og?title=${encodeURIComponent(title)}`,
           width: 1200,
           height: 630,
         },
@@ -63,7 +65,7 @@ export async function generateMetadata({
       site: '@izakdvlpr',
       images: [
         {
-          url: `${PUBLIC_URL}/og?title=${encodeURIComponent(title)}`,
+          url: `${PUBLIC_URL}/api/og?title=${encodeURIComponent(title)}`,
           width: 1200,
           height: 630,
         },
@@ -75,28 +77,15 @@ export async function generateMetadata({
 export default async function PostPage({ params }: PostDetailsPageProps) {
   const { slug } = await params
 
-  const getCachedPost = cache(() => getPostBySlug(slug), [`posts:${slug}`], {
-    revalidate: 60,
-    tags: [`posts:${slug}`],
-  })
-
-  const post = await getCachedPost()
+  const post = await getPostBySlug(slug)
 
   if (!post) {
     notFound()
   }
 
-  const ip = await getIp()
-
-  const isViewed = await addViewToPost({ slug, ip })
-
-  if (isViewed) {
-    revalidateTag(`posts:${slug}`)
-  }
-
   return (
     <main className="mt-10 flex flex-col">
-      <div className="mb-6 flex flex-col gap-2">
+      <section className="mb-6 flex flex-col gap-4">
         <h1 className="text-3xl font-extrabold">{post.title}</h1>
 
         <p className="text-sm text-gray-200">
@@ -106,12 +95,14 @@ export default async function PostPage({ params }: PostDetailsPageProps) {
 
         <div className="flex gap-2">
           {post.tags.map((tag) => (
-            <Link href={`/blog/tags?${tag}`} key={tag}>
+            <Link href={`/blog?tags=${tag}`} key={tag}>
               <Badge>{tag}</Badge>
             </Link>
           ))}
         </div>
-      </div>
+      </section>
+
+      <ReportView slug={slug} />
 
       <MDXRender content={post.content} />
     </main>

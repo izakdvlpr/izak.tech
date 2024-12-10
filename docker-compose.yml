@@ -4,12 +4,39 @@ x-web: &web
   tty: true
   stdin_open: true
   user: root
+  environment:
+    NEXT_TELEMETRY_DISABLED: 1
   env_file:
    - .env
+  depends_on:
+    redis:
+      condition: service_healthy
   ports:
-    - "3000:3000"
+    - "${WEB_PORT}:${WEB_PORT}"
 
 services:
+  redis:
+    container_name: izakdvlpr-redis
+    image: bitnami/redis:latest
+    restart: always
+    tty: true
+    stdin_open: true
+    user: root
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    environment:
+      REDIS_PORT_NUMBER: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    volumes:
+      - ./.docker/redis:/bitnami/redis
+    profiles:
+      - dev
+      - prod
   web-dev:
     <<: *web
     build:

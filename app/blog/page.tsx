@@ -1,30 +1,35 @@
 import type { Metadata } from 'next'
-import { unstable_cache as cache } from 'next/cache'
+import type { Revalidate } from 'next/dist/server/lib/revalidate'
 import Image from 'next/image'
 import Link from 'next/link'
 
 import { Badge } from '@/components/ui/badge'
 import { getAllPosts, getTags } from '@/lib/blog'
 
-const getCachedPosts = cache(() => getAllPosts(), ['posts'], { revalidate: 60, tags: ['posts'] })
+export const revalidate: Revalidate = 60
 
 export const metadata: Metadata = {
-  title: 'Isaque Lima | Blog',
+  title: 'Isaque Lima » Blog',
 }
 
 export default async function PostListPage() {
-  const posts = await getCachedPosts()
+  const posts = await getAllPosts()
   const tags = getTags(posts)
 
   return (
     <main className="mt-10 flex flex-col gap-4">
       <h1 className="text-3xl font-bold">Blog</h1>
-        
-      <div className='flex items-center gap-2'>
+
+      <p>
+        A blog about technology, programming, and everything else I find
+        interesting.
+      </p>
+
+      <div className="flex items-center gap-2">
         {tags.map((tag) => (
-          <Badge key={tag} className="pointer-events-none">
-            {tag}
-          </Badge>
+          <Link href={`/blog?tags=${tag}`} key={tag}>
+            <Badge>{tag}</Badge>
+          </Link>
         ))}
       </div>
 
