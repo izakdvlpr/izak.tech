@@ -51,7 +51,7 @@ export async function generateMetadata({
       publishedTime: new Date(post.date ?? 0).toISOString(),
       images: [
         {
-          url: `${PUBLIC_URL}/api/og?title=${encodeURIComponent(title)}`,
+          url: `${PUBLIC_URL}/api/og?title=${encodeURIComponent(post.title)}`,
           width: 1200,
           height: 630,
         },
@@ -65,7 +65,7 @@ export async function generateMetadata({
       site: '@izakdvlpr',
       images: [
         {
-          url: `${PUBLIC_URL}/api/og?title=${encodeURIComponent(title)}`,
+          url: `${PUBLIC_URL}/api/og?title=${encodeURIComponent(post.title)}`,
           width: 1200,
           height: 630,
         },
