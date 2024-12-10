@@ -14,7 +14,7 @@ interface MDXRenderProps {
 
 export function MDXRender({ content }: MDXRenderProps) {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       <MDXRemote
         source={content}
         components={{

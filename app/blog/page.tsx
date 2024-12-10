@@ -17,17 +17,15 @@ export default async function PostListPage() {
   const tags = getTags(posts)
 
   return (
-    <main className="mt-10 flex flex-col gap-6">
-      <div className='flex flex-col gap-2'>
-        <h1 className="text-3xl font-bold">Blog</h1>
+    <main className="mt-10 flex flex-col gap-4">
+      <h1 className="text-3xl font-bold">Blog</h1>
         
-        <div className='flex items-center gap-2'>
-          {tags.map((tag) => (
-            <Badge key={tag} className="pointer-events-none">
-              {tag}
-            </Badge>
-          ))}
-        </div>
+      <div className='flex items-center gap-2'>
+        {tags.map((tag) => (
+          <Badge key={tag} className="pointer-events-none">
+            {tag}
+          </Badge>
+        ))}
       </div>
 
       {posts.map((post) => (
