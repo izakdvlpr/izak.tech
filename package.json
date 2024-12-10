@@ -31,6 +31,7 @@
     "react-dom": "^19.0.0",
     "reading-time": "^1.5.0",
     "sonner": "^1.7.0",
+    "swr": "^2.2.5",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "tailwindcss-mixins": "^0.0.11",
