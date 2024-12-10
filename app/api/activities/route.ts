@@ -20,17 +20,17 @@ export async function GET() {
     .get(`https://api.lanyard.rest/v1/users/${environment.DISCORD_ID}`)
     .then((res) => res.data.data)
     .catch(() => null)
+    
+  if (!user) {
+    return NextResponse.json({ error: 'An error occurred' }, { status: 500 })
+  }
 
   const vscode = user?.activities?.find(
     (a: any) => a.name === 'Visual Studio Code',
   )
 
-  if (!user || !vscode) {
-    return NextResponse.json({ error: 'An error occurred' }, { status: 500 })
-  }
-
   return NextResponse.json({
-    vscode: {
+    vscode: vscode ? {
       largeImage: getVscodeAssetUrl(vscode.assets.large_image),
       largeText: vscode.assets.large_text ?? 'Visual Studio Code',
       smallImage: getVscodeAssetUrl(vscode.assets.small_image),
@@ -38,8 +38,8 @@ export async function GET() {
       details: vscode?.details,
       state: vscode?.state,
       time: formatTime(Date.now() - vscode.timestamps.start),
-    },
-    spotify: {
+    } : null,
+    spotify: user.spotify ? {
       album: user.spotify.album,
       albumArtUrl: user.spotify.album_art_url,
       artist: user.spotify.artist,
@@ -48,6 +48,6 @@ export async function GET() {
         user.spotify.timestamps.end - user.spotify.timestamps.start,
       ),
       trackId: user.spotify.track_id,
-    },
+    } : null
   })
 }
