@@ -2,18 +2,13 @@ import { Disc3 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import type { Spotify } from '@/lib/lanyard'
-import { formatTime } from '@/utils'
+import type { Spotify } from './activities'
 
 interface SpotifyCardProps {
   spotify: Spotify
 }
 
 export function SpotifyCard({ spotify }: SpotifyCardProps) {
-  const timeFormated = formatTime(
-    spotify.timestamps.end - spotify.timestamps.start,
-  )
-
   return (
     <div className="h-[150px] p-4 flex flex-col gap-2 rounded-md bg-primary">
       <div className="flex items-center gap-2">
@@ -24,7 +19,7 @@ export function SpotifyCard({ spotify }: SpotifyCardProps) {
 
       <div className="flex gap-4">
         <Image
-          src={spotify.album_art_url}
+          src={spotify.albumArtUrl}
           alt={spotify.album}
           title={spotify.album}
           width={64}
@@ -34,7 +29,7 @@ export function SpotifyCard({ spotify }: SpotifyCardProps) {
 
         <div className="max-w-[300px] flex flex-col truncate">
           <Link
-            href={`https://open.spotify.com/track/${spotify.track_id}`}
+            href={`https://open.spotify.com/track/${spotify.trackId}`}
             title={spotify.song}
             target="_blank"
             rel="noopener noreferrer"
@@ -56,7 +51,7 @@ export function SpotifyCard({ spotify }: SpotifyCardProps) {
           >
             {spotify.artist}
           </p>
-          <p className="text-sm">{timeFormated}</p>
+          <p className="text-sm">{spotify.time}</p>
         </div>
       </div>
     </div>
