@@ -12,5 +12,4 @@ WORKDIR /usr/src/app
 COPY . .
 RUN npm install --force
 RUN npm run build
-RUN npm prune --omit=dev
 CMD ["npm", "run", "start"]
