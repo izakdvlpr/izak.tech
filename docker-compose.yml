@@ -1,0 +1,35 @@
+x-web: &web
+  container_name: "izakdvlpr-website"
+  restart: always
+  tty: true
+  stdin_open: true
+  user: root
+  env_file:
+   - .env
+  ports:
+    - "3000:3000"
+
+services:
+  web-dev:
+    <<: *web
+    build:
+      context: .
+      target: development
+      dockerfile: Dockerfile
+    volumes:
+      - .:/usr/src/app
+    profiles:
+      - dev
+  web-prod:
+    <<: *web
+    build:
+      context: .
+      target: production
+      dockerfile: Dockerfile
+    profiles:
+      - prod
+
+networks:
+  default:
+    name: izakdvlpr-website
+    driver: bridge
